@@ -16,6 +16,7 @@ import { NgoDashboard } from './pages/ngo/NgoDashboard';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { CreateDonation } from './pages/donations/CreateDonation';
 import { DonationDetails } from './pages/donations/DonationDetails';
+import { DonationsPage } from './pages/donations/DonationsPage';
 import { Notifications } from './pages/Notifications';
 import { Impact } from './pages/Impact';
 import { NotFound } from './pages/NotFound';
@@ -111,7 +112,7 @@ const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<DashboardRouter />} />
+          <Route index element={<DonationsPage />} />
           <Route path="new" element={<CreateDonation />} />
           <Route path=":id" element={<DonationDetails />} />
         </Route>

@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useDonations } from '../../hooks/useDonations';
+import { Donation } from '../../types/donation';
 import { DonationList } from '../../components/donation/DonationList';
+import { EditDonationModal } from '../../components/donation/EditDonationModal';
+import { DeleteDonationModal } from '../../components/donation/DeleteDonationModal';
 import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -18,7 +21,10 @@ import {
 export const DonorDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { donations, isLoading } = useDonations(user?.id, 'donor');
+  const { donations, isLoading, refresh } = useDonations(user?.id, 'donor');
+
+  const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
+  const [deletingDonation, setDeletingDonation] = useState<Donation | null>(null);
 
   const activeDonations = donations.filter(
     (d) => !['completed', 'expired', 'cancelled'].includes(d.status)
@@ -93,21 +99,27 @@ export const DonorDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Active Donations */}
+      {/* Recent Donations Preview */}
       <Card>
         <CardHeader
-          title="Active Donations"
-          subtitle="Donations currently in progress"
+          title="Recent Donations"
+          subtitle="Your latest surplus food contributions"
           action={
-            <Button variant="ghost" size="sm" onClick={() => navigate('/donations')}>
-              View All
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/donations')}
+            >
+              View All ({donations.length}) &rarr;
             </Button>
           }
         />
         <DonationList
-          donations={activeDonations}
+          donations={donations.slice(0, 3)}
           isLoading={isLoading}
-          emptyTitle="No active donations"
+          onEdit={(donation) => setEditingDonation(donation)}
+          onDelete={(donation) => setDeletingDonation(donation)}
+          emptyTitle="No donations yet"
           emptyDescription="Create your first donation to start helping reduce food waste."
           emptyAction={
             <Button onClick={() => navigate('/donations/new')}>
@@ -116,6 +128,17 @@ export const DonorDashboard: React.FC = () => {
             </Button>
           }
         />
+        {donations.length > 3 && (
+          <div className="pt-4 mt-2 border-t border-gray-100 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/donations')}
+            >
+              View all {donations.length} donations on the My Donations page &rarr;
+            </Button>
+          </div>
+        )}
       </Card>
 
       {/* Quick Impact Summary */}
@@ -144,6 +167,22 @@ export const DonorDashboard: React.FC = () => {
           </div>
         </div>
       </Card>
+
+      {/* Edit Donation Modal */}
+      <EditDonationModal
+        isOpen={!!editingDonation}
+        donation={editingDonation}
+        onClose={() => setEditingDonation(null)}
+        onSuccess={() => refresh()}
+      />
+
+      {/* Delete Donation Modal */}
+      <DeleteDonationModal
+        isOpen={!!deletingDonation}
+        donation={deletingDonation}
+        onClose={() => setDeletingDonation(null)}
+        onSuccess={() => refresh()}
+      />
     </div>
   );
 };

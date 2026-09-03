@@ -11,6 +11,8 @@ interface DonationListProps {
   emptyTitle?: string;
   emptyDescription?: string;
   emptyAction?: React.ReactNode;
+  onEdit?: (donation: Donation) => void;
+  onDelete?: (donation: Donation) => void;
 }
 
 export const DonationList: React.FC<DonationListProps> = ({
@@ -19,6 +21,8 @@ export const DonationList: React.FC<DonationListProps> = ({
   emptyTitle = 'No donations yet',
   emptyDescription = 'When donations appear, they will show up here.',
   emptyAction,
+  onEdit,
+  onDelete,
 }) => {
   if (isLoading) {
     return <LoadingSpinner text="Loading donations..." />;
@@ -36,9 +40,14 @@ export const DonationList: React.FC<DonationListProps> = ({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {donations.map((donation) => (
-        <DonationCard key={donation.id} donation={donation} />
+        <DonationCard
+          key={donation.id}
+          donation={donation}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       ))}
     </div>
   );

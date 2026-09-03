@@ -40,4 +40,13 @@ export const donationService = {
     const response = await api.patch(`/donations/${id}/status`, { status });
     return response.data;
   },
+
+  update: async (id: string, data: Partial<CreateDonationData>): Promise<Donation> => {
+    const response = await api.put(`/donations/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/donations/${id}`);
+  },
 };

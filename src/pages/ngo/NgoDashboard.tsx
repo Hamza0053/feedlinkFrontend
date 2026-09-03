@@ -112,56 +112,43 @@ export const NgoDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Tabbed Donations List */}
+      {/* Available Donations Preview */}
       <Card>
         <CardHeader
-          title="Donations"
+          title="Available for Claim"
+          subtitle="Top surplus batches ready for rescue"
           action={
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                    activeTab === tab.key
-                      ? 'bg-white text-primary-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  {tab.label}
-                  <span className="ml-1.5 text-xs text-gray-400">
-                    ({tab.count})
-                  </span>
-                </button>
-              ))}
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/donations')}
+            >
+              Browse All ({availableDonations.length}) &rarr;
+            </Button>
           }
         />
         <DonationList
-          donations={getCurrentDonations()}
+          donations={availableDonations.slice(0, 3)}
           isLoading={isLoading}
-          emptyTitle={
-            activeTab === 'available'
-              ? 'No available donations'
-              : activeTab === 'claimed'
-              ? 'No claimed donations'
-              : 'No completed donations'
-          }
-          emptyDescription={
-            activeTab === 'available'
-              ? 'New donations will appear here when they become available.'
-              : activeTab === 'claimed'
-              ? 'Claim a donation to see it here.'
-              : 'Complete a pickup to see it here.'
-          }
+          emptyTitle="No donations available right now"
+          emptyDescription="New food donations from local donors will appear here as soon as they are submitted."
           emptyAction={
-            activeTab === 'available' ? (
-              <Button variant="secondary" onClick={() => navigate('/dashboard')}>
-                Refresh
-              </Button>
-            ) : undefined
+            <Button variant="secondary" onClick={() => navigate('/donations')}>
+              Open Donations Marketplace
+            </Button>
           }
         />
+        {availableDonations.length > 3 && (
+          <div className="pt-4 mt-2 border-t border-gray-100 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/donations')}
+            >
+              View all {availableDonations.length} available donations on the Donations page &rarr;
+            </Button>
+          </div>
+        )}
       </Card>
     </div>
   );

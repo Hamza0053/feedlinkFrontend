@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { DashboardLayout } from '../components/layout/DashboardLayout';
+import { useAuth } from '../hooks/useAuth';
 import { Card, CardHeader } from '../components/ui/Card';
 import { StatCard } from '../components/ui/StatCard';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -12,7 +14,7 @@ import {
   mockRecentActivity,
 } from '../mock/stats';
 import { statsService } from '../services/statsService';
-import { ImpactStats, TopDonor, TopNgo, RecentActivity, AiMatchingStats } from '../types/stats';
+import { ImpactStats, MonthlyStats, TopDonor, TopNgo, RecentActivity, AiMatchingStats } from '../types/stats';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import {
@@ -27,7 +29,9 @@ import {
 } from 'lucide-react';
 
 export const Impact: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const [impactStats, setImpactStats] = useState<ImpactStats | null>(null);
+  const [monthlyStats, setMonthlyStats] = useState<MonthlyStats[]>([]);
   const [topDonors, setTopDonors] = useState<TopDonor[]>([]);
   const [topNgos, setTopNgos] = useState<TopNgo[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
@@ -36,41 +40,41 @@ export const Impact: React.FC = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const [impact, donors, ngos, activity, ai] = await Promise.all([
+        const [impact, monthly, donors, ngos, activity, ai] = await Promise.all([
           statsService.getImpact(),
+          statsService.getMonthly(),
           statsService.getTopDonors(),
           statsService.getTopNgos(),
           statsService.getRecentActivity(),
           statsService.getAiMatching(),
         ]);
         setImpactStats(impact);
-        setTopDonors(donors);
-        setTopNgos(ngos);
-        setRecentActivity(activity);
+        setMonthlyStats(monthly || []);
+        setTopDonors(donors || []);
+        setTopNgos(ngos || []);
+        setRecentActivity(activity || []);
         setAiStats(ai);
-      } catch {
-        // Unauthenticated or API down — use mock data for demo
+      } catch (error) {
+        console.warn('Could not load live stats, fallback active:', error);
       }
     };
     load();
   }, []);
 
   const stats = impactStats || mockImpactStats;
+  const currentMonthly = monthlyStats.length > 0 ? monthlyStats : mockMonthlyStats;
   const donors = topDonors.length > 0 ? topDonors : mockTopDonors;
   const ngos = topNgos.length > 0 ? topNgos : mockTopNgos;
   const activity = recentActivity.length > 0 ? recentActivity : mockRecentActivity;
   const isLiveData = !!impactStats;
 
   const maxMonthlyDonations = Math.max(
-    ...mockMonthlyStats.map((m) => m.donations)
+    1,
+    ...currentMonthly.map((m) => m.donations)
   );
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navbar />
-
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  const content = (
+    <div className="space-y-8">
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
@@ -150,7 +154,7 @@ export const Impact: React.FC = () => {
             <Card className="lg:col-span-2">
               <CardHeader title="Monthly Donations" subtitle="Last 6 months" />
               <div className="space-y-4">
-                {mockMonthlyStats.map((month) => (
+                {currentMonthly.map((month) => (
                   <div key={month.month} className="flex items-center gap-4">
                     <span className="text-sm font-medium text-gray-500 w-10">
                       {month.month}
@@ -175,13 +179,13 @@ export const Impact: React.FC = () => {
               <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t">
                 <div className="text-center">
                   <p className="text-lg font-bold text-gray-900">
-                    {mockMonthlyStats.reduce((a, m) => a + m.donations, 0)}
+                    {currentMonthly.reduce((a, m) => a + m.donations, 0)}
                   </p>
                   <p className="text-xs text-gray-500">Total Donations</p>
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-bold text-gray-900">
-                    {mockMonthlyStats
+                    {currentMonthly
                       .reduce((a, m) => a + m.mealsProvided, 0)
                       .toLocaleString()}
                   </p>
@@ -190,7 +194,7 @@ export const Impact: React.FC = () => {
                 <div className="text-center">
                   <p className="text-lg font-bold text-gray-900">
                     {(
-                      mockMonthlyStats.reduce((a, m) => a + m.kgRedistributed, 0) / 1000
+                      currentMonthly.reduce((a, m) => a + m.kgRedistributed, 0) / 1000
                     ).toFixed(1)}
                     t
                   </p>
@@ -314,9 +318,19 @@ export const Impact: React.FC = () => {
               ))}
             </div>
           </Card>
-        </div>
-      </main>
+    </div>
+  );
 
+  if (isAuthenticated) {
+    return <DashboardLayout>{content}</DashboardLayout>;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        {content}
+      </main>
       <Footer />
     </div>
   );
