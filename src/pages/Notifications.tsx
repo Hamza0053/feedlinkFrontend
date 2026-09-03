@@ -26,7 +26,7 @@ export const Notifications: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [activeTab, setActiveTab] = useState<NotificationTab>('all');
 
-  const getNotificationStyle = (type: string, read: boolean) => {
+  const getNotificationStyle = (type: string) => {
     switch (type) {
       case 'donation_matched':
         return {
@@ -192,7 +192,7 @@ export const Notifications: React.FC = () => {
         ) : (
           <div className="divide-y divide-gray-100">
             {filteredNotifications.map((notification) => {
-              const style = getNotificationStyle(notification.type, notification.read);
+              const style = getNotificationStyle(notification.type);
 
               return (
                 <div

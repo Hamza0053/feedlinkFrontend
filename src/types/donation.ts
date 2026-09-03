@@ -32,6 +32,7 @@ export interface Donation {
   foodCategory: FoodCategory;
   quantity: string;
   unit: string;
+  servings?: number | null;
   expiryDate: string;
   pickupAddress: string;
   pickupCity: string;

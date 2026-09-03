@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useDonations } from '../../hooks/useDonations';
@@ -19,9 +19,6 @@ export const NgoDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { donations, isLoading } = useDonations(user?.id, 'ngo');
-  const [activeTab, setActiveTab] = useState<'available' | 'claimed' | 'completed'>(
-    'available'
-  );
 
   const availableDonations = donations.filter((d) =>
     ['pending', 'analyzing', 'matched'].includes(d.status)
@@ -32,23 +29,6 @@ export const NgoDashboard: React.FC = () => {
   const completedDonations = donations.filter((d) =>
     ['delivered', 'completed'].includes(d.status)
   );
-
-  const tabs = [
-    { key: 'available' as const, label: 'Available', count: availableDonations.length },
-    { key: 'claimed' as const, label: 'Claimed', count: claimedDonations.length },
-    { key: 'completed' as const, label: 'Completed', count: completedDonations.length },
-  ];
-
-  const getCurrentDonations = () => {
-    switch (activeTab) {
-      case 'available':
-        return availableDonations;
-      case 'claimed':
-        return claimedDonations;
-      case 'completed':
-        return completedDonations;
-    }
-  };
 
   return (
     <div className="space-y-6">

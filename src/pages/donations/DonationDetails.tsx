@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   Package,
   MapPin,
-  Clock,
   Calendar,
   Brain,
   CheckCircle2,
@@ -24,8 +23,6 @@ import {
   Users,
   Shield,
   Sparkles,
-  Target,
-  Zap,
   Pencil,
   Trash2,
   ShieldCheck,
@@ -139,7 +136,7 @@ export const DonationDetails: React.FC = () => {
   const urgencyPercent = ai?.urgencyScorePercent ?? (ai ? ai.urgencyScore * 10 : 0);
   const statusMeta = statusConfig[donation.status] || statusConfig.pending;
 
-  const isOwner = user?.role === 'donor' && (user?.id === donation.donorId || user?.role === 'admin');
+  const isOwner = (user?.role === 'donor' && user?.id === donation.donorId) || user?.role === 'admin';
   const canEdit = isOwner && ['pending', 'analyzing', 'matched'].includes(donation.status);
   const canDelete = isOwner && !['claimed', 'pickup_scheduled', 'in_transit'].includes(donation.status);
 

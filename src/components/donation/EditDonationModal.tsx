@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Donation, CreateDonationData, FoodCategory } from '../../types/donation';
+import { Donation, CreateDonationData } from '../../types/donation';
 import { donationService } from '../../services/donationService';
 import { Modal } from '../ui/Modal';
 import { Input, Textarea } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
-import { Package, Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface EditDonationModalProps {
