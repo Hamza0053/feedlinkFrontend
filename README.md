@@ -98,6 +98,7 @@ The backend contains:
 ### Frontend
 
 npm install
+
 npm run dev
 
 ### Backend
