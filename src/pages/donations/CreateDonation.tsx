@@ -94,12 +94,12 @@ export const CreateDonation: React.FC = () => {
   const handleProceedToAnalysis = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title.trim()) {
-      toast.error('Please enter a donation title');
+    if (formData.title.trim().length < 3) {
+      toast.error('Title must be at least 3 characters');
       return;
     }
-    if (!formData.description.trim()) {
-      toast.error('Please enter a brief description');
+    if (formData.description.trim().length < 10) {
+      toast.error('Description must be at least 10 characters');
       return;
     }
     if (!formData.quantity || Number(formData.quantity) <= 0) {
@@ -110,12 +110,12 @@ export const CreateDonation: React.FC = () => {
       toast.error('Please select an expiry date & time');
       return;
     }
-    if (!formData.pickupAddress.trim()) {
-      toast.error('Please enter the pickup address');
+    if (formData.pickupAddress.trim().length < 5) {
+      toast.error('Pickup address must be at least 5 characters');
       return;
     }
-    if (!formData.pickupCity.trim()) {
-      toast.error('Please enter the city');
+    if (formData.pickupCity.trim().length < 2) {
+      toast.error('City must be at least 2 characters');
       return;
     }
 
@@ -132,7 +132,10 @@ export const CreateDonation: React.FC = () => {
       setCreatedDonation(result);
       toast.success('AI analysis & matching complete!');
     } catch (err: any) {
-      const msg = err?.response?.data?.error || 'AI analysis failed. Please try again.';
+      const details = err?.response?.data?.details;
+      const msg = details
+        ? details.map((d: { field: string; message: string }) => `${d.field}: ${d.message}`).join('; ')
+        : err?.response?.data?.error || 'AI analysis failed. Please try again.';
       setSubmissionError(msg);
       toast.error(msg);
     } finally {

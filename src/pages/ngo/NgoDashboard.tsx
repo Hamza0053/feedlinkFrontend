@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useDonations } from '../../hooks/useDonations';
@@ -7,18 +7,23 @@ import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { requirementService } from '../../services/requirementService';
+import { NgoRequirement } from '../../types/requirement';
 import {
   ShoppingBag,
   HandHeart,
   Truck,
   CheckCircle,
   MapPin,
+  ClipboardList,
+  AlertTriangle,
 } from 'lucide-react';
 
 export const NgoDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { donations, isLoading } = useDonations(user?.id, 'ngo');
+  const [requirements, setRequirements] = useState<NgoRequirement[]>([]);
 
   const availableDonations = donations.filter((d) =>
     ['pending', 'analyzing', 'matched'].includes(d.status)
@@ -29,6 +34,12 @@ export const NgoDashboard: React.FC = () => {
   const completedDonations = donations.filter((d) =>
     ['delivered', 'completed'].includes(d.status)
   );
+
+  useEffect(() => {
+    requirementService.getMyRequirements('active').then(setRequirements).catch(() => {});
+  }, []);
+
+  const activeRequirements = requirements.filter((r) => r.status === 'active');
 
   return (
     <div className="space-y-6">
@@ -91,6 +102,100 @@ export const NgoDashboard: React.FC = () => {
           </p>
         </div>
       )}
+
+      {/* Expiring Requirements Warning */}
+      {activeRequirements.filter(
+        (r) => {
+          const hoursLeft = (new Date(r.neededUntil).getTime() - Date.now()) / (1000 * 60 * 60);
+          return hoursLeft <= 24 && hoursLeft > 0;
+        }
+      ).length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <AlertTriangle size={18} className="text-amber-600" />
+            <h3 className="font-semibold text-amber-900">Expiring Soon</h3>
+          </div>
+          <p className="text-sm text-amber-700">
+            {activeRequirements.filter(
+              (r) => {
+                const hoursLeft = (new Date(r.neededUntil).getTime() - Date.now()) / (1000 * 60 * 60);
+                return hoursLeft <= 24 && hoursLeft > 0;
+              }
+            ).length} requirement(s) expiring within 24 hours. Consider extending or creating new ones.
+          </p>
+        </div>
+      )}
+
+      {/* Active Requirements */}
+      <Card>
+        <CardHeader
+          title="My Active Requirements"
+          subtitle={`${activeRequirements.length} active food need${activeRequirements.length !== 1 ? 's' : ''}`}
+          action={
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/requirements')}
+            >
+              Manage All &rarr;
+            </Button>
+          }
+        />
+        {activeRequirements.length === 0 ? (
+          <div className="text-center py-8">
+            <ClipboardList size={40} className="mx-auto text-gray-300 mb-3" />
+            <p className="text-gray-500 text-sm mb-3">
+              No active requirements. Create one to start receiving matched donations.
+            </p>
+            <Button variant="primary" size="sm" onClick={() => navigate('/requirements')}>
+              Create Requirement
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {activeRequirements.slice(0, 3).map((req) => {
+              const progressPct = Math.round(
+                ((req.quantityNeeded - req.remainingQuantity) / req.quantityNeeded) * 100
+              );
+              const hoursLeft = (new Date(req.neededUntil).getTime() - Date.now()) / (1000 * 60 * 60);
+              const isExpiring = hoursLeft <= 24;
+
+              return (
+                <div key={req.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-sm text-gray-900 truncate">{req.title}</span>
+                      {isExpiring && (
+                        <Badge variant="warning" size="sm">
+                          <AlertTriangle size={10} /> Expiring
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span>{req.foodCategory.replace('_', ' ')}</span>
+                      <span>{req.pickupCity}</span>
+                      <span>{req.remainingQuantity.toFixed(0)} {req.unit} remaining</span>
+                    </div>
+                    <div className="mt-1.5 w-full bg-gray-200 rounded-full h-1.5">
+                      <div
+                        className="bg-primary-500 h-1.5 rounded-full"
+                        style={{ width: `${Math.min(100, progressPct)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {activeRequirements.length > 3 && (
+              <div className="text-center pt-2">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/requirements')}>
+                  View all {activeRequirements.length} requirements &rarr;
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
 
       {/* Available Donations Preview */}
       <Card>

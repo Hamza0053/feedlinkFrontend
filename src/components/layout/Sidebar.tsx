@@ -14,6 +14,7 @@ import {
   Shield,
   HeartHandshake,
   Package,
+  ClipboardList,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -61,6 +62,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       label: 'Browse Donations',
       path: '/donations',
       icon: HeartHandshake,
+      show: role === 'ngo',
+      exact: true,
+    },
+    {
+      label: 'My Requirements',
+      path: '/requirements',
+      icon: ClipboardList,
       show: role === 'ngo',
       exact: true,
     },

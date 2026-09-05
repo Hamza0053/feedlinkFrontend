@@ -20,6 +20,7 @@ import { DonationsPage } from './pages/donations/DonationsPage';
 import { Notifications } from './pages/Notifications';
 import { Impact } from './pages/Impact';
 import { NotFound } from './pages/NotFound';
+import { RequirementsPage } from './pages/requirements/RequirementsPage';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 
 // Protected Route wrapper
@@ -126,6 +127,18 @@ const AppRoutes: React.FC = () => {
           }
         >
           <Route index element={<Notifications />} />
+        </Route>
+
+        {/* NGO Requirements */}
+        <Route
+          path="/requirements"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<RequirementsPage />} />
         </Route>
 
         {/* Admin-only routes */}
