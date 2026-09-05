@@ -112,12 +112,12 @@ export const Login: React.FC = () => {
                 />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <a
+              {/* <a
                 href="#"
                 className="text-sm text-primary-600 hover:text-primary-700 font-medium"
               >
                 Forgot password?
-              </a>
+              </a> */}
             </div>
 
             <Button type="submit" loading={isLoading} className="w-full" size="lg">
