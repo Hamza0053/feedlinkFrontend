@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-import { Leaf, Heart } from 'lucide-react';
-=======
 import { Heart } from 'lucide-react';
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
 
 export const Footer: React.FC = () => {
   return (
@@ -13,19 +9,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-<<<<<<< HEAD
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-white" />
-              </div>
-=======
             <div className="flex items-center gap-2.5 mb-4">
               <img
                 src="/logo.png"
                 alt="FeedLink AI"
                 className="h-10 w-auto rounded-lg"
               />
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
               <span className="text-xl font-bold text-white">
                 FeedLink <span className="text-primary-400">AI</span>
               </span>

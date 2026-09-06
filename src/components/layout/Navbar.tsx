@@ -10,10 +10,6 @@ import {
   Bell,
   LogOut,
   ChevronDown,
-<<<<<<< HEAD
-  Leaf,
-=======
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -47,17 +43,11 @@ export const Navbar: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2">
-<<<<<<< HEAD
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-white" />
-              </div>
-=======
               <img
                 src="/logo.png"
                 alt="FeedLink AI"
                 className="h-10 w-auto rounded-lg"
               />
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
               <span className="text-xl font-bold text-gray-900">
                 FeedLink <span className="text-primary-600">AI</span>
               </span>

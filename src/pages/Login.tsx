@@ -3,13 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-<<<<<<< HEAD
-import { Mail, Lock, Leaf, AlertCircle } from 'lucide-react';
-=======
 import { Modal } from '../components/ui/Modal';
 import { authService } from '../services/authService';
 import { Mail, Lock, AlertCircle, ArrowLeft, Send, CheckCircle2 } from 'lucide-react';
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
 import toast from 'react-hot-toast';
 
 export const Login: React.FC = () => {
@@ -20,8 +16,6 @@ export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-<<<<<<< HEAD
-=======
   // Forgot password modal state
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
@@ -70,7 +64,6 @@ export const Login: React.FC = () => {
     }
   };
 
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -110,17 +103,11 @@ export const Login: React.FC = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-<<<<<<< HEAD
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-white" />
-            </div>
-=======
             <img
               src="/logo.png"
               alt="FeedLink AI"
               className="h-10 w-auto rounded-xl"
             />
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
             <span className="text-2xl font-bold text-gray-900">
               FeedLink <span className="text-primary-600">AI</span>
             </span>
@@ -177,14 +164,6 @@ export const Login: React.FC = () => {
                 />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-<<<<<<< HEAD
-              {/* <a
-                href="#"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-              >
-                Forgot password?
-              </a> */}
-=======
               <button
                 type="button"
                 onClick={openForgotModal}
@@ -192,7 +171,6 @@ export const Login: React.FC = () => {
               >
                 Forgot password?
               </button>
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
             </div>
 
             <Button type="submit" loading={isLoading} className="w-full" size="lg">
@@ -223,8 +201,6 @@ export const Login: React.FC = () => {
           <p className="mt-1 text-gray-400">Requires backend + PostgreSQL running</p>
         </div>
       </div>
-<<<<<<< HEAD
-=======
 
       {/* Forgot Password Modal */}
       <Modal isOpen={isForgotModalOpen} onClose={closeForgotModal} title="Reset your password" size="sm">
@@ -292,7 +268,6 @@ export const Login: React.FC = () => {
           </form>
         )}
       </Modal>
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
     </div>
   );
 };

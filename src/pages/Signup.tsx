@@ -4,11 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { UserRole } from '../types/user';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-<<<<<<< HEAD
-import { Mail, Lock, User, Building2, Phone, Leaf } from 'lucide-react';
-=======
 import { Mail, Lock, User, Building2, Phone } from 'lucide-react';
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
 import toast from 'react-hot-toast';
 
 export const Signup: React.FC = () => {
@@ -78,17 +74,11 @@ export const Signup: React.FC = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-<<<<<<< HEAD
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-white" />
-            </div>
-=======
             <img
               src="/logo.png"
               alt="FeedLink AI"
               className="h-10 w-auto rounded-xl"
             />
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
             <span className="text-2xl font-bold text-gray-900">
               FeedLink <span className="text-primary-600">AI</span>
             </span>
