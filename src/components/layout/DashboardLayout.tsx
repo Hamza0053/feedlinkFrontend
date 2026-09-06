@@ -4,11 +4,7 @@ import { Sidebar } from './Sidebar';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../hooks/useNotifications';
 import { Avatar } from '../ui/Avatar';
-<<<<<<< HEAD
-import { Menu, Bell, Leaf, Sparkles } from 'lucide-react';
-=======
 import { Menu, Bell, Sparkles } from 'lucide-react';
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
 
 export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -65,17 +61,11 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
 
             {/* Mobile Brand Logo */}
             <div className="flex md:hidden items-center gap-2">
-<<<<<<< HEAD
-              <div className="w-7 h-7 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-white" />
-              </div>
-=======
               <img
                 src="/logo.png"
                 alt="FeedLink AI"
                 className="h-8 w-auto rounded-lg"
               />
->>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
               <span className="font-bold text-gray-900 text-base">
                 FeedLink <span className="text-primary-600">AI</span>
               </span>
