@@ -406,7 +406,7 @@ export const CreateDonation: React.FC = () => {
                     value={formData.pickupInstructions}
                     onChange={handleChange}
                     rows={2}
-                    placeholder="e.g., Please enter via back loading dock. Ring bell labeled Kitchen."
+                    placeholder="e.g., Enter via back loading dock. Ring bell labeled Kitchen."
                   />
                 </div>
               </Card>
@@ -569,11 +569,14 @@ export const CreateDonation: React.FC = () => {
                         ID: {createdDonation.id.slice(0, 8)}...
                       </span>
                     </div>
-                    <h2 className="text-xl font-bold mt-0.5">
-                      Donation Analyzed & NGO Matched!
-                    </h2>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      <h2 className="text-xl font-bold">
+                        Donation Analyzed & Urgency Prioritized!
+                      </h2>
+                      <UrgencyBadge level={createdDonation.urgencyLevel} size="sm" />
+                    </div>
                     <p className="text-xs text-emerald-100 mt-0.5">
-                      Your surplus food has been recorded and an alert sent to the recommended partner.
+                      Your surplus food has been recorded and prioritized for nearby NGOs.
                     </p>
                   </div>
                 </div>
@@ -655,10 +658,10 @@ export const CreateDonation: React.FC = () => {
                         <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-100">
                           <p className="text-xs font-medium text-emerald-800 flex items-center gap-1.5">
                             <ShieldCheck size={14} className="text-emerald-600" />
-                            Recommended Route
+                            Visibility Note
                           </p>
                           <p className="text-base font-bold text-emerald-900 mt-1">
-                            {ai?.recommendedDistribution || 'Shelters & Meal Programs'}
+                            Your donation is visible to verified NGOs
                           </p>
                         </div>
                       </div>
@@ -702,8 +705,8 @@ export const CreateDonation: React.FC = () => {
                 <div className="space-y-6">
                   <Card className="border-emerald-200 shadow-sm">
                     <CardHeader
-                      title="Best NGO Partner Match"
-                      subtitle="Automatically matched based on proximity & capacity"
+                      title="Donation Visibility"
+                      subtitle="Your donation is visible to verified NGOs"
                       action={
                         createdDonation.matchScore != null ? (
                           <Badge variant="success" size="sm">
@@ -758,9 +761,9 @@ export const CreateDonation: React.FC = () => {
                         </>
                       ) : (
                         <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-center text-xs text-gray-500">
-                          <p className="font-semibold text-gray-700">Open For Claim</p>
+                          <p className="font-semibold text-gray-700">Visible to NGOs</p>
                           <p className="mt-1">
-                            Donation is live on the NGO discovery board for local verified receivers.
+                            Your donation is visible to verified NGOs in {createdDonation.pickupCity}.
                           </p>
                         </div>
                       )}

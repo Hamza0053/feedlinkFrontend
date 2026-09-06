@@ -140,19 +140,45 @@ export const DonationDetails: React.FC = () => {
   const canEdit = isOwner && ['pending', 'analyzing', 'matched'].includes(donation.status);
   const canDelete = isOwner && !['claimed', 'pickup_scheduled', 'in_transit'].includes(donation.status);
 
-  // Lifecycle steps
+  // Lifecycle steps (5 essential manual/visible stages)
   const statusSteps = [
-    { key: 'pending', label: 'Submitted', icon: Package },
-    { key: 'analyzing', label: 'AI Analyzed', icon: Brain },
+    { key: 'submitted', label: 'Submitted', icon: Package },
+    { key: 'ai_analyzed', label: 'AI analyzed', icon: Brain },
     { key: 'matched', label: 'Matched', icon: Users },
-    { key: 'claimed', label: 'Claimed', icon: CheckCircle2 },
-    { key: 'pickup_scheduled', label: 'Pickup Ready', icon: Calendar },
     { key: 'in_transit', label: 'In Transit', icon: Truck },
-    { key: 'delivered', label: 'Delivered', icon: CheckCircle2 },
     { key: 'completed', label: 'Completed', icon: Shield },
   ];
 
-  const currentStepIndex = statusSteps.findIndex((s) => s.key === donation.status);
+  const stepKeyForStatus = (status: DonationStatus): string => {
+    switch (status) {
+      case 'pending':
+        return 'submitted';
+      case 'analyzing':
+        return 'ai_analyzed';
+      case 'matched':
+        return 'matched';
+      case 'claimed':
+      case 'pickup_scheduled':
+      case 'in_transit':
+      case 'delivered':
+        return 'in_transit';
+      case 'completed':
+        return 'completed';
+      default:
+        return 'submitted';
+    }
+  };
+
+  const currentStepKey = stepKeyForStatus(donation.status);
+  const currentStepIndex = statusSteps.findIndex((s) => s.key === currentStepKey);
+
+  const stepDescriptions: Record<string, string> = {
+    submitted: 'Donation submitted and awaiting AI analysis',
+    ai_analyzed: 'AI urgency scoring and safety analysis complete',
+    matched: 'Matched with a verified local NGO receiver',
+    in_transit: 'Food is being collected and delivered',
+    completed: 'Redistributed successfully to the community',
+  };
 
   // Calculate hours remaining until expiry
   const expiryDate = new Date(donation.expiryDate);
@@ -293,14 +319,7 @@ export const DonationDetails: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={statusMeta.variant} size="md">
-                <span className="w-1.5 h-1.5 rounded-full bg-current mr-1.5 animate-pulse" />
-                {statusMeta.label}
-              </Badge>
               <UrgencyBadge level={donation.urgencyLevel} size="md" />
-              <span className="text-xs text-gray-400 font-mono">
-                #{donation.id.slice(0, 8)}
-              </span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
@@ -350,7 +369,9 @@ export const DonationDetails: React.FC = () => {
                 <ShieldCheck size={16} className="text-primary-600" />
                 Donation Lifecycle Progress
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">{statusMeta.description}</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {stepDescriptions[currentStepKey] || statusMeta.description}
+              </p>
             </div>
             <span className="text-xs font-bold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full border border-primary-100">
               Step {currentStepIndex + 1} of {statusSteps.length}
@@ -359,7 +380,7 @@ export const DonationDetails: React.FC = () => {
 
           {/* Stepper Node Line */}
           <div className="overflow-x-auto pb-2 pt-1">
-            <div className="min-w-[680px] flex items-center justify-between relative">
+            <div className="min-w-[560px] flex items-center justify-between relative">
               {/* Background Connecting Bar */}
               <div className="absolute top-5 left-6 right-6 h-0.5 bg-gray-200 -z-0" />
               {/* Active Connecting Bar */}
@@ -573,14 +594,14 @@ export const DonationDetails: React.FC = () => {
                   </div>
                 )}
 
-                {/* Recommended Distribution Route */}
+                {/* Visibility Note */}
                 {ai.recommendedDistribution && (
                   <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
                     <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
-                      Recommended Route
+                      Visibility Note
                     </span>
                     <span className="text-xs font-medium text-emerald-900 mt-0.5 block">
-                      {ai.recommendedDistribution}
+                      Your donation is visible to verified NGOs
                     </span>
                   </div>
                 )}
@@ -612,7 +633,7 @@ export const DonationDetails: React.FC = () => {
           {donation.matchedNgoName ? (
             <Card className="border-emerald-200 shadow-2xs">
               <CardHeader
-                title="Matched NGO Partner"
+                title="Receiving Partner"
                 action={
                   donation.matchScore != null ? (
                     <Badge variant="success" size="sm">
@@ -672,9 +693,9 @@ export const DonationDetails: React.FC = () => {
                 <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 mx-auto flex items-center justify-center">
                   <Building2 size={20} />
                 </div>
-                <h4 className="text-sm font-bold text-gray-800">Open For NGO Claim</h4>
+                <h4 className="text-sm font-bold text-gray-800">Visible to NGOs</h4>
                 <p className="text-xs text-gray-500">
-                  This donation is visible to all registered NGOs in {donation.pickupCity}.
+                  Your donation is visible to verified NGOs in {donation.pickupCity}.
                 </p>
               </div>
             </Card>

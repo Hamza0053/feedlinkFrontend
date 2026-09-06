@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Donation, DonationStatus } from '../../types/donation';
-import { Badge } from '../ui/Badge';
+import { Donation } from '../../types/donation';
 import { UrgencyBadge } from './UrgencyBadge';
 import {
   MapPin,
@@ -24,23 +23,6 @@ interface DonationCardProps {
   onEdit?: (donation: Donation) => void;
   onDelete?: (donation: Donation) => void;
 }
-
-const statusConfig: Record<
-  DonationStatus,
-  { variant: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'primary'; label: string }
-> = {
-  pending: { variant: 'default', label: 'Pending' },
-  analyzing: { variant: 'info', label: 'Analyzing' },
-  matched: { variant: 'primary', label: 'Matched' },
-  claimed: { variant: 'info', label: 'Claimed' },
-  pickup_scheduled: { variant: 'warning', label: 'Pickup Ready' },
-  in_transit: { variant: 'warning', label: 'In Transit' },
-  delivered: { variant: 'success', label: 'Delivered' },
-  completed: { variant: 'success', label: 'Completed' },
-  expired: { variant: 'danger', label: 'Expired' },
-  cancelled: { variant: 'danger', label: 'Cancelled' },
-  available: { variant: 'primary', label: 'Available' },
-};
 
 const categoryIconMap: Record<string, React.ReactNode> = {
   prepared_meals: <Utensils size={15} className="text-amber-600" />,
@@ -79,7 +61,6 @@ export const DonationCard: React.FC<DonationCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const status = statusConfig[donation.status] || statusConfig.pending;
 
   const isRecommendedForMe = user?.role === 'ngo' && donation.matchedNgoId === user.id;
   const canEdit = !['claimed', 'pickup_scheduled', 'in_transit', 'delivered', 'completed'].includes(
@@ -209,15 +190,10 @@ export const DonationCard: React.FC<DonationCardProps> = ({
       {/* Card Footer */}
       <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-          <Badge variant={status.variant} size="sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-current mr-1 opacity-75" />
-            {status.label}
-          </Badge>
-
           {/* Recommended for current NGO */}
           {isRecommendedForMe && ['pending', 'analyzing', 'matched'].includes(donation.status) && (
-            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1 shrink-0 animate-pulse">
-              <Sparkles size={10} className="text-emerald-600" /> Matched for You
+            <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 flex items-center gap-1 shrink-0 animate-pulse">
+              <Sparkles size={10} className="text-amber-600" /> Urgency Prioritized
             </span>
           )}
         </div>

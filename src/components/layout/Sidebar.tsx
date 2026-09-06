@@ -4,7 +4,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../hooks/useNotifications';
 import { Avatar } from '../ui/Avatar';
 import {
+<<<<<<< HEAD
   Leaf,
+=======
+>>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
   LayoutDashboard,
   PlusCircle,
   BarChart3,
@@ -148,9 +151,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
             className="flex items-center gap-2.5 focus:outline-hidden"
             onClick={onClose}
           >
+<<<<<<< HEAD
             <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-xs">
               <Leaf className="w-5 h-5 text-white" />
             </div>
+=======
+            <img
+              src="/logo.png"
+              alt="FeedLink AI"
+              className="h-9 w-auto rounded-lg"
+            />
+>>>>>>> c3bddc98b0e89b75ca1a8e53245df14d7f6d6fca
             <div>
               <span className="text-lg font-bold text-gray-900 tracking-tight">
                 FeedLink <span className="text-primary-600">AI</span>

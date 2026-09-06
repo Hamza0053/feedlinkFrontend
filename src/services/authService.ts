@@ -20,4 +20,9 @@ export const authService = {
       return null;
     }
   },
+
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
 };
