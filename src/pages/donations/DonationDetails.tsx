@@ -83,11 +83,32 @@ export const DonationDetails: React.FC = () => {
     if (!donation) return;
     setIsActionLoading(true);
     try {
-      const updated = await donationService.claim(donation.id);
+      let updated: Donation;
+
+      if (['pending', 'analyzing', 'matched'].includes(donation.status)) {
+        updated = await donationService.claim(donation.id);
+      } else {
+        const nextStatusMap: Record<string, string> = {
+          claimed: 'in_transit',
+          pickup_scheduled: 'in_transit',
+          in_transit: 'completed',
+          delivered: 'completed',
+        };
+        const nextStatus = nextStatusMap[donation.status];
+        if (!nextStatus) return;
+        updated = await donationService.updateStatus(donation.id, nextStatus);
+      }
+
       setDonation(updated);
-      toast.success('Donation claimed successfully!');
+
+      const doneMessages: Record<string, string> = {
+        claimed: 'Done: Matched',
+        in_transit: 'Done: In Transit',
+        completed: 'Done: Completed',
+      };
+      toast.success(doneMessages[updated.status] || 'Done', { duration: 4000 });
     } catch {
-      toast.error('Failed to claim donation');
+      toast.error('Failed to update donation');
     } finally {
       setIsActionLoading(false);
     }
@@ -99,7 +120,6 @@ export const DonationDetails: React.FC = () => {
     try {
       const updated = await donationService.updateStatus(donation.id, newStatus);
       setDonation(updated);
-      toast.success(`Status updated to ${newStatus.replace(/_/g, ' ')}`);
     } catch {
       toast.error('Failed to update status');
     } finally {
@@ -249,66 +269,18 @@ export const DonationDetails: React.FC = () => {
           )}
 
           {/* NGO Workflow Actions */}
-          {user?.role === 'ngo' && (
-            <>
-              {['pending', 'matched', 'analyzing'].includes(donation.status) && (
-                <Button
-                  size="sm"
-                  onClick={handleClaim}
-                  disabled={isActionLoading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs font-semibold"
-                >
-                  <CheckCircle2 size={14} />
-                  {isActionLoading ? 'Claiming...' : 'Claim This Donation'}
-                </Button>
-              )}
-              {donation.status === 'claimed' && (
-                <Button
-                  size="sm"
-                  onClick={() => handleStatusUpdate('pickup_scheduled')}
-                  disabled={isActionLoading}
-                  className="bg-primary-600 hover:bg-primary-700 text-white flex items-center gap-1.5 font-semibold"
-                >
-                  <Calendar size={14} />
-                  {isActionLoading ? 'Updating...' : 'Schedule Pickup'}
-                </Button>
-              )}
-              {donation.status === 'pickup_scheduled' && (
-                <Button
-                  size="sm"
-                  onClick={() => handleStatusUpdate('in_transit')}
-                  disabled={isActionLoading}
-                  className="bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 font-semibold"
-                >
-                  <Truck size={14} />
-                  {isActionLoading ? 'Updating...' : 'Mark In Transit'}
-                </Button>
-              )}
-              {donation.status === 'in_transit' && (
-                <Button
-                  size="sm"
-                  onClick={() => handleStatusUpdate('delivered')}
-                  disabled={isActionLoading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 font-semibold"
-                >
-                  <CheckCircle2 size={14} />
-                  {isActionLoading ? 'Updating...' : 'Mark Delivered'}
-                </Button>
-              )}
-              {donation.status === 'delivered' && (
-                <Button
-                  size="sm"
-                  variant="success"
-                  onClick={() => handleStatusUpdate('completed')}
-                  disabled={isActionLoading}
-                  className="flex items-center gap-1.5 font-semibold"
-                >
-                  <ShieldCheck size={14} />
-                  {isActionLoading ? 'Updating...' : 'Complete Donation'}
-                </Button>
-              )}
-            </>
-          )}
+          {user?.role === 'ngo' &&
+            !['completed', 'expired', 'cancelled'].includes(donation.status) && (
+              <Button
+                size="sm"
+                onClick={handleClaim}
+                disabled={isActionLoading}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs font-semibold"
+              >
+                <CheckCircle2 size={14} />
+                {isActionLoading ? 'Processing...' : 'Claim This Donation'}
+              </Button>
+            )}
         </div>
       </div>
 

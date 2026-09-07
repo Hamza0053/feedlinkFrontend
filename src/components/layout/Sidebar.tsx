@@ -68,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       label: 'My Requirements',
       path: '/requirements',
       icon: ClipboardList,
-      show: role === 'ngo',
+      show: false,
       exact: true,
     },
     {

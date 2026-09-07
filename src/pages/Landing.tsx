@@ -26,15 +26,16 @@ export const Landing: React.FC = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-emerald-50">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-100/80 via-green-50 to-teal-100/80">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full opacity-30 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-100 rounded-full opacity-30 blur-3xl" />
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-emerald-300 rounded-full opacity-25 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-green-300 rounded-full opacity-25 blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-200/30 rounded-full blur-3xl" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100/80 text-emerald-800 rounded-full text-sm font-medium mb-6 border border-emerald-200/50 shadow-sm">
               <Sparkles size={16} />
               AI-Powered Food Redistribution
             </div>
